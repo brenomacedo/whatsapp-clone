@@ -91,5 +91,5 @@ header {
 }
 
 .contentarea {
-
+  flex: 1;
 }

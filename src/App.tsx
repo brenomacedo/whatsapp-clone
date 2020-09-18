@@ -5,10 +5,20 @@ import MoreVert from '@material-ui/icons/MoreVert'
 import Search from '@material-ui/icons/Search'
 import ChatListItem from './components/ChatListItem'
 import './App.css'
+import ChatIntro from './components/ChatIntro'
+import ChatWindow from './components/ChatWindow'
 
 function App() {
 
-  const [chatList, setChatList] = useState([1, 2, 3, 4,5,5,5,5,5,5])
+  interface IChat { chatId: number | undefined, title: string, image: string }
+
+  const [chatList, setChatList] = useState<IChat[]>([
+    { chatId: 1, title: 'hello world', image: 'https://www.w3schools.com/howto/img_avatar.png' },
+    { chatId: 2, title: 'hello world', image: 'https://www.w3schools.com/howto/img_avatar.png' },
+    { chatId: 3, title: 'hello world', image: 'https://www.w3schools.com/howto/img_avatar.png' },
+    { chatId: 4, title: 'hello world', image: 'https://www.w3schools.com/howto/img_avatar.png' }
+  ])
+  const [activeChat, setActiveChat] = useState<IChat>({ chatId: undefined, title: 'hello world', image: 'https://www.w3schools.com/howto/img_avatar.png' })
 
   return (
     <div className="app-window">
@@ -36,15 +46,20 @@ function App() {
          </div>
 
          <div className="chatlist">
-          {chatList.map(l => {
+          {chatList.map((l, index) => {
             return (
-              <ChatListItem />
+              <ChatListItem data={l} active={activeChat.chatId === l.chatId} key={index} onClick={() => setActiveChat(chatList[index])} />
             )
           })}
          </div>
       </div>
       <div className="contentarea">
-
+        {activeChat.chatId !== undefined && (
+          <ChatWindow />
+        )}
+        {activeChat.chatId === undefined && (
+          <ChatIntro />
+        )}
       </div>
     </div>
   );
