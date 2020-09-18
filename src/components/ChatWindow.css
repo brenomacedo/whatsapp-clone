@@ -45,6 +45,8 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    overflow: hidden;
+    transition: 0.3s;
 }
 
 .chatWindow-body {
@@ -54,4 +56,51 @@
     background-size: cover;
     background-position: center;
     background-image: url('https://i.pinimg.com/originals/ab/ab/60/abab60f06ab52fa7846593e6ae0c9a0b.png');
+}
+
+.chatWindow-footer {
+    height: 62px;
+    display: flex;
+    align-items: center;
+}
+
+.chatWindow-pre {
+    display: flex;
+    margin: 0 15px;
+}
+
+.chatWindow-inputarea {
+    flex: 1;
+}
+
+.chatWindow-input {
+    width: 100%;
+    height: 40px;
+    border: 0;
+    outline: 0;
+    background-color: white;
+    border-radius: 20px;
+    font-size: 15px;
+    color: #4a4a4a;
+    padding-left: 15px;
+}
+
+.chatWindow-pos {
+    display: flex;
+    margin: 0 15px;
+}
+
+.chatWindow-emojiarea {
+    height: 200px;
+    overflow-y: hidden;
+    transition: all ease 0.3s;
+}
+
+aside.emoji-picker-react {
+    width: auto;
+    background: none;
+}
+
+aside.emoji-picker-react .emoji-group::before {
+    background: none;
 }
