@@ -8,24 +8,38 @@ import './App.css'
 import ChatIntro from './components/ChatIntro'
 import ChatWindow from './components/ChatWindow'
 import NewChat from './components/NewChat'
+import Login from './components/Login'
+import api from './api/api'
 
 function App() {
 
-  interface IChat { chatId: number | undefined, title: string, image: string }
+  interface IChat { chatId: string | undefined, title: string, image: string }
+  interface IUser {
+    id: string
+    name: string
+    avatar: string
+  }
 
-  const [chatList, setChatList] = useState<IChat[]>([
-    { chatId: 1, title: 'hello world', image: 'https://www.w3schools.com/howto/img_avatar.png' },
-    { chatId: 2, title: 'hello world', image: 'https://www.w3schools.com/howto/img_avatar.png' },
-    { chatId: 3, title: 'hello world', image: 'https://www.w3schools.com/howto/img_avatar.png' },
-    { chatId: 4, title: 'hello world', image: 'https://www.w3schools.com/howto/img_avatar.png' }
-  ])
+  const [chatList, setChatList] = useState<IChat[]>([])
   const [activeChat, setActiveChat] = useState<IChat>({ chatId: undefined, title: 'hello world', image: 'https://www.w3schools.com/howto/img_avatar.png' })
-  const [user, setUser] = useState({
-    id: 1234,
-    avatar: 'https://www.w3schools.com/howto/img_avatar.png',
-    name: 'breno macedo'
-  })
+  const [user, setUser] = useState<IUser | null>(null)
   const [showNewChat, setShowNewChat] = useState(false)
+
+  const handleLoginData = async (u: firebase.User) => {
+    let newUser = {
+      id: u.uid,
+      name: u.displayName ? u.displayName : 'undefined',
+      avatar: u.photoURL ? u.photoURL : 'undefined'
+    }
+    await api.addUser({...newUser, id: u.uid})
+    setUser(newUser)
+  }
+
+  if(user === null) {
+    return (
+      <Login onReceive={handleLoginData} />
+    )
+  }
 
   return (
     <div className="app-window">

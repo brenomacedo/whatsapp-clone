@@ -5,10 +5,10 @@ interface MessageItemProps {
     data: {
         body: string
         date: string
-        author: number
+        author: string
     },
     user: {
-        id: number
+        id: string
         name: string
         avatar: string
     }

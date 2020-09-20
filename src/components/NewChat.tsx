@@ -1,28 +1,38 @@
-import React, { useState, SetStateAction, FC, Dispatch } from 'react'
+import React, { useState, SetStateAction, FC, Dispatch, useEffect } from 'react'
 import './NewChat.css'
+import api from '../api/api'
 import ArrowBack from '@material-ui/icons/ArrowBack'
 
-interface IChat { chatId: number | undefined, title: string, image: string }
+interface IChat { chatId: string | undefined, title: string, image: string }
+interface IUser {
+    id: string
+    avatar: string
+    name: string
+}
 interface NewChatProps {
     chatList: IChat[],
     show: boolean,
     setShow: Dispatch<SetStateAction<boolean>>
-    user: {
-        id: number
-        avatar: string
-        name: string
-    }
+    user: IUser
 }
 
 const NewChat: FC<NewChatProps> = ({ chatList, setShow, show, user }) => {
 
-    const [list, setList] = useState([
-        { id: 123, avatar: 'https://www.w3schools.com/howto/img_avatar.png', name: 'Breno' },
-        { id: 123, avatar: 'https://www.w3schools.com/howto/img_avatar.png', name: 'Breno' },
-        { id: 123, avatar: 'https://www.w3schools.com/howto/img_avatar.png', name: 'Breno' },
-        { id: 123, avatar: 'https://www.w3schools.com/howto/img_avatar.png', name: 'Breno' },
-        { id: 123, avatar: 'https://www.w3schools.com/howto/img_avatar.png', name: 'Breno' }
-    ])
+    useEffect(() => {
+        async function getUsers() {
+            if(user !== null) {
+                let results = await api.getContactList(String(user.id))
+                setList(results)
+            }
+        }
+    }, [user])
+
+    const [list, setList] = useState<IUser[]>([])
+
+    const addNewChat = async (user2: IUser) => {
+        await api.addNewChat(user, user2)
+        setShow(false)
+    }
 
     return (
         <div className="newChat" style={{ left: show ? 0 : -415 }}>
@@ -37,7 +47,7 @@ const NewChat: FC<NewChatProps> = ({ chatList, setShow, show, user }) => {
             <div className="newChat-list">
                 {list.map((item, index) => {
                     return (
-                        <div key={index} className="newChat-item">
+                        <div onClick={() => addNewChat(item)} key={index} className="newChat-item">
                             <img className="newChat-itemavatar" src={item.avatar} alt=""/>
                             <div className="newChat-itemname">
                                 {item.name}

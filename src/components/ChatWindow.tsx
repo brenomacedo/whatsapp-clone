@@ -12,7 +12,7 @@ import MessageItem from './MessageItem'
 
 interface ChatWindowProps {
     user: {
-        id: number
+        id: string
         name: string
         avatar: string
     }
@@ -33,21 +33,7 @@ const ChatWindow: FC<ChatWindowProps> = ({ user }) => {
     const [emojiOpen, setEmojiOpen] = useState(false)
     const [text, setText] = useState('')
     const [listening, setListening] = useState(false)
-    const [list, setList] = useState([
-        { body: 'bla bla bla', date: '19:00', author: 123 },
-        { body: 'bla bla bla', date: '19:00', author: 1234 },
-        { body: 'bla bla bla', date: '19:00', author: 123 },{ body: 'bla bla bla', date: '19:00', author: 123 },
-        { body: 'bla bla bla', date: '19:00', author: 1234 },
-        { body: 'bla bla bla', date: '19:00', author: 123 },{ body: 'bla bla bla', date: '19:00', author: 123 },
-        { body: 'bla bla bla', date: '19:00', author: 1234 },
-        { body: 'bla bla bla', date: '19:00', author: 123 },{ body: 'bla bla bla', date: '19:00', author: 123 },
-        { body: 'bla bla bla', date: '19:00', author: 1234 },
-        { body: 'bla bla bla', date: '19:00', author: 123 },{ body: 'bla bla bla', date: '19:00', author: 123 },
-        { body: 'bla bla bla', date: '19:00', author: 1234 },
-        { body: 'bla bla bla', date: '19:00', author: 123 },{ body: 'bla bla bla', date: '19:00', author: 123 },
-        { body: 'bla bla bla', date: '19:00', author: 1234 },
-        { body: 'bla bla bla', date: '19:00', author: 123 },
-    ])
+    const [list, setList] = useState([])
 
     const bodyRef = useRef<HTMLDivElement>(null)
 

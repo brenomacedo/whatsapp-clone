@@ -1,7 +1,7 @@
 import React, { FC, SetStateAction } from 'react'
 import './ChatListItem.css'
 
-interface IChat { chatId: number | undefined, title: string, image: string }
+interface IChat { chatId: string | undefined, title: string, image: string }
 
 interface ChatListItemProps {
     onClick: () => void
