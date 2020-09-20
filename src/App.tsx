@@ -7,6 +7,7 @@ import ChatListItem from './components/ChatListItem'
 import './App.css'
 import ChatIntro from './components/ChatIntro'
 import ChatWindow from './components/ChatWindow'
+import NewChat from './components/NewChat'
 
 function App() {
 
@@ -24,17 +25,19 @@ function App() {
     avatar: 'https://www.w3schools.com/howto/img_avatar.png',
     name: 'breno macedo'
   })
+  const [showNewChat, setShowNewChat] = useState(false)
 
   return (
     <div className="app-window">
       <div className="sidebar">
-         <header>
+        <NewChat chatList={chatList} show={showNewChat} setShow={setShowNewChat} user={user} />
+        <header>
           <img className="header-avatar" src={user.avatar} alt="avatar"/>
           <div className="header-buttons">
             <div className="header-btn">
               <DonutLarge style={{ color: '#919191' }} />
             </div>
-            <div className="header-btn">
+            <div onClick={() => setShowNewChat(true)} className="header-btn">
               <Chat style={{ color: '#919191' }} />
             </div>
             <div className="header-btn">
