@@ -51,6 +51,7 @@
 
 .chatWindow-body {
     flex: 1;
+    padding: 20px 30px;
     overflow: auto;
     background-color: #e5ddd5;
     background-size: cover;
@@ -103,4 +104,13 @@ aside.emoji-picker-react {
 
 aside.emoji-picker-react .emoji-group::before {
     background: none;
+}
+
+.chatWindow-body::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+.chatWindow-body::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
 }

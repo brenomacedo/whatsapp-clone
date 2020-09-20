@@ -1,4 +1,4 @@
-import React, { FormEvent, useState, ChangeEvent } from 'react'
+import React, { FormEvent, useState, ChangeEvent, FC, useEffect, useRef } from 'react'
 import Search from '@material-ui/icons/Search'
 import Attach from '@material-ui/icons/AttachFile'
 import More from '@material-ui/icons/More'
@@ -8,8 +8,17 @@ import Close from '@material-ui/icons/Close'
 import Mic from '@material-ui/icons/Mic'
 import EmojiPicker, { IEmojiData } from 'emoji-picker-react'
 import './ChatWindow.css'
+import MessageItem from './MessageItem'
 
-const ChatWindow = () => {
+interface ChatWindowProps {
+    user: {
+        id: number
+        name: string
+        avatar: string
+    }
+}
+
+const ChatWindow: FC<ChatWindowProps> = ({ user }) => {
 
     let recognition: SpeechRecognition | null = null;
     let SpeechRecognition = window.SpeechRecognition
@@ -24,6 +33,31 @@ const ChatWindow = () => {
     const [emojiOpen, setEmojiOpen] = useState(false)
     const [text, setText] = useState('')
     const [listening, setListening] = useState(false)
+    const [list, setList] = useState([
+        { body: 'bla bla bla', date: '19:00', author: 123 },
+        { body: 'bla bla bla', date: '19:00', author: 1234 },
+        { body: 'bla bla bla', date: '19:00', author: 123 },{ body: 'bla bla bla', date: '19:00', author: 123 },
+        { body: 'bla bla bla', date: '19:00', author: 1234 },
+        { body: 'bla bla bla', date: '19:00', author: 123 },{ body: 'bla bla bla', date: '19:00', author: 123 },
+        { body: 'bla bla bla', date: '19:00', author: 1234 },
+        { body: 'bla bla bla', date: '19:00', author: 123 },{ body: 'bla bla bla', date: '19:00', author: 123 },
+        { body: 'bla bla bla', date: '19:00', author: 1234 },
+        { body: 'bla bla bla', date: '19:00', author: 123 },{ body: 'bla bla bla', date: '19:00', author: 123 },
+        { body: 'bla bla bla', date: '19:00', author: 1234 },
+        { body: 'bla bla bla', date: '19:00', author: 123 },{ body: 'bla bla bla', date: '19:00', author: 123 },
+        { body: 'bla bla bla', date: '19:00', author: 1234 },
+        { body: 'bla bla bla', date: '19:00', author: 123 },
+    ])
+
+    const bodyRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if(bodyRef.current) {
+            if(bodyRef.current?.scrollHeight > bodyRef.current?.offsetHeight) {
+                bodyRef.current.scrollTop = bodyRef.current.scrollHeight - bodyRef.current.offsetHeight
+            }
+        }
+    }, [list])
 
     const handleMicClick = () => {
         if(recognition !== null) {
@@ -69,8 +103,12 @@ const ChatWindow = () => {
                 </div>
 
             </div>
-            <div className="chatWindow-body">
-
+            <div ref={bodyRef} className="chatWindow-body">
+                {list.map((item, key) => {
+                    return (
+                        <MessageItem user={user} key={key} data={item} />
+                    )
+                })}
             </div>
 
             <div className="chatWindow-emojiarea" style={{ height: emojiOpen ? 200 : 0 }}>

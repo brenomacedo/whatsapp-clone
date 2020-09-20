@@ -19,12 +19,17 @@ function App() {
     { chatId: 4, title: 'hello world', image: 'https://www.w3schools.com/howto/img_avatar.png' }
   ])
   const [activeChat, setActiveChat] = useState<IChat>({ chatId: undefined, title: 'hello world', image: 'https://www.w3schools.com/howto/img_avatar.png' })
+  const [user, setUser] = useState({
+    id: 1234,
+    avatar: 'https://www.w3schools.com/howto/img_avatar.png',
+    name: 'breno macedo'
+  })
 
   return (
     <div className="app-window">
       <div className="sidebar">
          <header>
-          <img className="header-avatar" src="https://www.w3schools.com/howto/img_avatar.png" alt="avatar"/>
+          <img className="header-avatar" src={user.avatar} alt="avatar"/>
           <div className="header-buttons">
             <div className="header-btn">
               <DonutLarge style={{ color: '#919191' }} />
@@ -55,7 +60,7 @@ function App() {
       </div>
       <div className="contentarea">
         {activeChat.chatId !== undefined && (
-          <ChatWindow />
+          <ChatWindow user={user} />
         )}
         {activeChat.chatId === undefined && (
           <ChatIntro />
