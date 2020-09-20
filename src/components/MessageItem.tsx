@@ -1,10 +1,10 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import './MessageItem.css'
 
 interface MessageItemProps {
     data: {
         body: string
-        date: string
+        date: number
         author: string
     },
     user: {
@@ -14,7 +14,12 @@ interface MessageItemProps {
     }
 }
 
+
 const MessageItem: FC<MessageItemProps> = ({ data, user }) => {
+
+    const [time, setTime] = useState('')
+
+
     return (
         <div className="messageLine" style={{
             justifyContent: user.id === data.author ? 'flex-end' : 'flex-start'
@@ -24,9 +29,6 @@ const MessageItem: FC<MessageItemProps> = ({ data, user }) => {
             }}>
                 <div className="messageText">
                     {data.body}
-                </div>
-                <div className="messageDate">
-                    {data.date}
                 </div>
             </div>
         </div>

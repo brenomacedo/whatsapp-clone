@@ -1,4 +1,4 @@
-import React, { FormEvent, useState, ChangeEvent, FC, useEffect, useRef } from 'react'
+import React, { FormEvent, useState, ChangeEvent, FC, useEffect, useRef, KeyboardEvent } from 'react'
 import Search from '@material-ui/icons/Search'
 import Attach from '@material-ui/icons/AttachFile'
 import More from '@material-ui/icons/More'
@@ -9,16 +9,25 @@ import Mic from '@material-ui/icons/Mic'
 import EmojiPicker, { IEmojiData } from 'emoji-picker-react'
 import './ChatWindow.css'
 import MessageItem from './MessageItem'
+import api from '../api/api'
 
+interface IChat { chatId: string | undefined, title: string, image: string, lastMessage: string }
 interface ChatWindowProps {
     user: {
         id: string
         name: string
         avatar: string
-    }
+    },
+    data: IChat
 }
 
-const ChatWindow: FC<ChatWindowProps> = ({ user }) => {
+const ChatWindow: FC<ChatWindowProps> = ({ user, data }) => {
+
+    interface IList {
+        author: string
+        body: string
+        date: number
+    }
 
     let recognition: SpeechRecognition | null = null;
     let SpeechRecognition = window.SpeechRecognition
@@ -33,7 +42,8 @@ const ChatWindow: FC<ChatWindowProps> = ({ user }) => {
     const [emojiOpen, setEmojiOpen] = useState(false)
     const [text, setText] = useState('')
     const [listening, setListening] = useState(false)
-    const [list, setList] = useState([])
+    const [list, setList] = useState<IList[]>([])
+    const [users, setUsers] = useState<string[]>([])
 
     const bodyRef = useRef<HTMLDivElement>(null)
 
@@ -44,6 +54,12 @@ const ChatWindow: FC<ChatWindowProps> = ({ user }) => {
             }
         }
     }, [list])
+
+    useEffect(() => {
+        setList([])
+        let unsub = api.onChatContent(data.chatId, setList, setUsers)
+        return unsub
+    }, [data.chatId])
 
     const handleMicClick = () => {
         if(recognition !== null) {
@@ -62,7 +78,17 @@ const ChatWindow: FC<ChatWindowProps> = ({ user }) => {
     }
 
     const handleSendClick = () => {
+        if(text !== '') {
+            api.sendMessage(data, user.id, 'text', text, users)
+            setText('')
+            setEmojiOpen(false)
+        }
+    }
 
+    const handleInputKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
+        if(e.key === '13') {
+            handleSendClick()
+        }
     }
 
     return (
@@ -70,8 +96,8 @@ const ChatWindow: FC<ChatWindowProps> = ({ user }) => {
             <div className="chatWindow-header">
 
                 <div className="chatWindow-headerinfo">
-                    <img src="https://www.w3schools.com/howto/img_avatar.png" alt="" className="chatWindow-avatar"/>
-                    <div className="chatWindow-name">Breno Macêdo</div>
+                    <img src={data.image} alt="" className="chatWindow-avatar"/>
+                    <div className="chatWindow-name">{data.title}</div>
                 </div>
 
                 <div className="chatWindow-headerbuttons">
@@ -118,7 +144,8 @@ const ChatWindow: FC<ChatWindowProps> = ({ user }) => {
 
                 <div className="chatWindow-inputarea">
                     <input value={text} onChange={e => setText(e.target.value)}
-                    placeholder="Digite uma mensagem" type="text" className="chatWindow-input"/>
+                    placeholder="Digite uma mensagem" type="text" className="chatWindow-input"
+                    onKeyUp={handleInputKeyUp}/>
                 </div>
 
                 <div className="chatWindow-pos">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import DonutLarge from '@material-ui/icons/DonutLarge'
 import Chat from '@material-ui/icons/Chat'
 import MoreVert from '@material-ui/icons/MoreVert'
@@ -13,15 +13,22 @@ import api from './api/api'
 
 function App() {
 
-  interface IChat { chatId: string | undefined, title: string, image: string }
+  interface IChat { chatId: string | undefined, title: string, image: string, lastMessage: string }
   interface IUser {
     id: string
     name: string
     avatar: string
   }
 
+  useEffect(() => {
+    if(user !== null) {
+      let unsub = api.onChatList(user.id, setChatList)
+      return unsub
+    }
+  }, [])
+
   const [chatList, setChatList] = useState<IChat[]>([])
-  const [activeChat, setActiveChat] = useState<IChat>({ chatId: undefined, title: 'hello world', image: 'https://www.w3schools.com/howto/img_avatar.png' })
+  const [activeChat, setActiveChat] = useState<IChat>({ chatId: undefined, title: 'hello world', image: 'https://www.w3schools.com/howto/img_avatar.png', lastMessage: '' })
   const [user, setUser] = useState<IUser | null>(null)
   const [showNewChat, setShowNewChat] = useState(false)
 
@@ -77,7 +84,7 @@ function App() {
       </div>
       <div className="contentarea">
         {activeChat.chatId !== undefined && (
-          <ChatWindow user={user} />
+          <ChatWindow user={user} data={activeChat} />
         )}
         {activeChat.chatId === undefined && (
           <ChatIntro />

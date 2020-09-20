@@ -1,7 +1,7 @@
-import React, { FC, SetStateAction } from 'react'
+import React, { FC, SetStateAction, useEffect, useState } from 'react'
 import './ChatListItem.css'
 
-interface IChat { chatId: string | undefined, title: string, image: string }
+interface IChat { chatId: string | undefined, title: string, image: string , lastMessage: string }
 
 interface ChatListItemProps {
     onClick: () => void
@@ -10,17 +10,20 @@ interface ChatListItemProps {
 }
 
 const ChatListItem: FC<ChatListItemProps> = ({ onClick, active, data }) => {
+
+    const [time, setTime] = useState('')
+
+
     return (
         <div onClick={onClick} className={`chatListItem ${active ? 'active' : ''}`}>
             <img src={data.image} alt="avatar" className="chatListItem-avatar"/>
             <div className="chatListItem-lines">
                 <div className="chatListItem-line">
                     <div className="chatListItem-name">{data.title}</div>
-                    <div className="chatListItem-date">19:00</div>
                 </div>
                 <div className="chatListItem-line">
                     <div className="chatListItem-lastMsg">
-                        <p>EaeEaeEaeEaeEaeEaeEaeEaeEaeEaeEaeEaeEaeEaeEaeEaeEaeEaeEaeEaeEae mano</p>
+                        <p>{data.lastMessage} mano</p>
                     </div>
                 </div>
             </div>

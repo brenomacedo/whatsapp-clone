@@ -9,13 +9,19 @@ const firebaseApp = firebase.initializeApp(firebaseConfig)
 
 const db = firebaseApp.firestore()
 
+interface IList {
+    author: string
+    body: string
+    date: number
+}
+
 interface IUser {
     id: string
     name: string
     avatar: string
 }
 
-interface IChat { chatId: string | undefined, title: string, image: string }
+interface IChat { chatId: string | undefined, title: string, image: string, lastMessage: string }
 
 export default {
     fbPopup: async () => {
@@ -76,5 +82,43 @@ export default {
                 }
             }
         })
+    },
+    onChatContent: (chatId: string | undefined, setList: Dispatch<SetStateAction<IList[]>>,
+        setUsers: Dispatch<SetStateAction<string[]>>) => {
+        return db.collection('chats').doc(chatId).onSnapshot((doc) => {
+            if(doc.exists) {
+                let data: any = doc.data
+                setList(data.messages)
+                setUsers(data.users)
+            }
+        })
+    },
+    sendMessage: async (chatData: IChat, userId: string, type: string, body: string, users: string[]) => {
+        db.collection('chats').doc(chatData.chatId).update({
+            messages: firebase.firestore.FieldValue.arrayUnion({
+                type,
+                author: userId,
+                body,
+                date: new Date()
+            })
+        })
+
+        for(let i in users) {
+            let u = await db.collection('users').doc(users[i]).get()
+            let uData: any = u.data()
+            if(uData.chats) {
+                let chats = {...uData.chats}
+                for(let e in chats) {
+                    if(chats[e].chatId == chatData.chatId ) {
+                        chats[e].lastMessage = body
+                        chats[e].lastMessageDate = Date.now()
+                    }
+                }
+
+                await db.collection('users').doc(users[i]).update({
+                    chats
+                })
+            }
+        }
     }
 }
